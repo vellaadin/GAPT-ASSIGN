@@ -1,0 +1,60 @@
+
+
+h1 {
+    color: #000;
+    font-size: 2em;
+    font-family: sans-serif;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+button {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 10px;
+    background-color: #000;
+    color: #fff;
+    font-size: 1.5em;
+    font-family: sans-serif;
+    text-align: center;
+    border: 0;
+    cursor: pointer;
+}
+
+.vertical-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: fit-content;
+    margin: 25px auto;
+    padding: 20px;
+    background-color: #808080;
+}
+
+.horizontal-container {
+    display: flex;
+    justify-content: center;
+    margin: 10px auto;
+
+    width: fit-content;
+    padding: 10px;
+    background-color: #b5b5b5;
+}
+
+#videoElement {
+    width: 640px;
+    height: 480px;
+    margin: 0;
+    padding: 0;
+    background-color: #646464;
+}   
+
+/* to be implemented... (I think we'll need it for opencv or smt, issa we see, at the very least it might help while testing) */
+#canvas {
+    width: 640px;
+    height: 480px;
+    margin: 0;
+    padding: 0;
+    background-color: #646464;
+}

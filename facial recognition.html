@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Face Detection and emotion classification using OpenCV and a custom trained model">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emotion classification using CV</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://docs.opencv.org/4.5.4/opencv.js"></script>
+  <script src="faceDetection.js"></script>
+</head>
+
+<body>
+  <!-- Title -->
+  <h1>Face Detection using OpenCV.js</h1>
+
+  <!-- Enable/Disable Webcam Buttons -->
+  <div class = "horizontal-container">
+    <!-- These are meant to be changed, just did them as placeholders -->
+    <button id="requestButton">Enable Webcam</button>
+    <button id="disableButton">Disable Webcam</button>
+  </div>
+
+  <!-- Playback and buttons container -->
+  <div class="vertical-container">
+    <!-- Playback and labels -->
+    <div class ="horizontal-container">
+      <video autoplay="true" id="videoElement"></video>
+      <div class = "vertical-container" id="label-container">
+        <div id="label">No face detected</div>
+        <div id="emotion">Emotion: </div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class = "buttons-container">
+      <button id="startButton">Start</button>
+      <button id="stopButton">Stop</button>
+    </div>
+  </div>
+
+</body>
+</html>
