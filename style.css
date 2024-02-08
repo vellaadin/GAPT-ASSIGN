@@ -42,6 +42,18 @@ button {
     background-color: #b5b5b5;
 }
 
+.hidden {
+    display: none;
+}
+
+#webcam-placeholder {
+    width: 640px;
+    height: 480px;
+    margin: 0;
+    padding: 0;
+    background-color: #646464;
+}
+
 #videoElement {
     width: 640px;
     height: 480px;
