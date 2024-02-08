@@ -17,28 +17,27 @@
   <!-- Title -->
   <h1>Face Detection using OpenCV.js</h1>
 
-  <!-- Enable/Disable Webcam Buttons -->
-  <div class = "horizontal-container">
-    <!-- These are meant to be changed, just did them as placeholders -->
-    <button id="requestButton">Enable Webcam</button>
-    <button id="disableButton">Disable Webcam</button>
-  </div>
-
-  <!-- Playback and buttons container -->
+  <!-- Playback and buttons -->
   <div class="vertical-container">
+    <!-- buttons -->
+    <div class = "horizontal-container">
+      <!-- Enable/Disable Webcam Buttons -->
+      <button id="requestButton">Enable Webcam</button>
+      <button id="disableButton">Disable Webcam</button>
+      <!-- Start/Stop Buttons -->
+      <button id="startButton">Start</button>
+      <button id="stopButton">Stop</button>
+    </div>
+
     <!-- Playback and labels -->
     <div class ="horizontal-container">
+      <!-- Video playback -->
       <video autoplay="true" id="videoElement"></video>
+      <!-- Labels -->
       <div class = "vertical-container" id="label-container">
         <div id="label">No face detected</div>
         <div id="emotion">Emotion: </div>
       </div>
-    </div>
-
-    <!-- Buttons -->
-    <div class = "buttons-container">
-      <button id="startButton">Start</button>
-      <button id="stopButton">Stop</button>
     </div>
   </div>
 
