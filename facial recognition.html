@@ -31,13 +31,20 @@
       <button id="stopButton" onclick="stopMusicSelection()">Stop</button>
     </div>
 
+    <div>
+      <h2 id="emotion" style="display: none;">Placeholder Emotion</h2>
+    </div>
+
     <!-- Playback and labels -->
     <div class ="horizontal-container">
       <!-- Video playback -->
       <div id="webcam-placeholder"></div>
       <div id="webcam-container"></div>
       <!-- Labels -->
-      <div class = "vertical-container" id="label-container"></div>
+      <div class = "vertical-container" id="side-container" style="display: none;">
+        <h3>Labels and their values:</h2>
+        <div id="label-container"></div>
+      </div>
     </div>
   </div>
 

@@ -1,17 +1,24 @@
-var accessGranted = false;
-var running = false;
-var modelOutput = null;
+var accessGranted = false; // Flag to check if the webcam access has been granted
+var running = false; // Flag to check if the music selection process is running (face detection, emotion prediction, music selection)
+var musicPlaying = false; // Flag to check if music is currently playing
+var mostLikelyEmotion = ""; // The most likely emotion detected by the model
+var sideContainer; // The container for the side panel showing the labels
 
-// the link to the model
+// The link to the model - realistically you'd want to hide this in a .env file or something
 const URL = "https://teachablemachine.withgoogle.com/models/l4Oo33mJS/";
 
-let model, webcam, labelContainer, maxPredictions;
+let model, webcam, labelContainer, maxPredictions; // Variables used by the model
+
+var temp; // May or may not remove - used to display the most likely emotion, used as an exercise to extract the most likely emotion from the model
 
 // Wait for the DOM to be ready before trying to access the video element (otherwise it might not be loaded yet)
 document.addEventListener("DOMContentLoaded", async function (event) {
   //-----------------Set up the model-----------------
   const modelURL = URL + "model.json";
   const metadataURL = URL + "metadata.json";
+
+  temp = document.getElementById("emotion");
+  sideContainer = document.getElementById("side-container");
 
   // load the model and metadata
   // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
@@ -56,6 +63,11 @@ function stopWebcam() {
     return;
   }
 
+  if (running) {
+    alert("Please stop the music selection first!"); // Maybe change to a more user-friendly alert
+    return;
+  }
+
   webcam.stop(); // Stop the webcam
   webcam.canvas.remove(); // Remove webcam playback from page
   window.cancelAnimationFrame(loop); // Stop updating the webcam frame
@@ -64,10 +76,18 @@ function stopWebcam() {
   accessGranted = false; // Disable the flag
 }
 
-// Loop to keep updating the webcam frame
+// Loop to keep updating the webcam frame (and do more if music selection is running)
 async function loop() {
   webcam.update(); // update the webcam frame
-  await predict();
+
+  // If the music selection process is running, run the face detection, emotion prediction and music selection
+  if (running) {
+    detectFace(); // Detect a face in the webcam frame
+    predict(); // Predict the emotion of the face
+    selectMusic(); // Select music based on the predicted emotion
+    // Consider different music selection logic e.g taking the highest value over a period of time rather than just the current frame
+  }
+
   window.requestAnimationFrame(loop); // request the next frame
 }
 
@@ -75,12 +95,26 @@ async function loop() {
 async function predict() {
   // predict can take in an image, video or canvas html element
   const prediction = await model.predict(webcam.canvas); // The input of this function will be the output of opencv once done
-  modelOutput = prediction; // Make prediction available to other functions
+
+  let highestProbability = 0; // Used to find the most likely emotion
+  let highestEmotion = "";
   for (let i = 0; i < maxPredictions; i++) {
+    // Find the most likely emotion
+    if (prediction[i].probability > highestProbability) {
+      highestProbability = prediction[i].probability;
+      highestEmotion = prediction[i].className;
+    }
+
+    // Display the prediction
     const classPrediction =
       prediction[i].className + ": " + prediction[i].probability.toFixed(2);
     labelContainer.childNodes[i].innerHTML = classPrediction;
   }
+
+  mostLikelyEmotion = highestEmotion; // Make the most likely emotion available to other functions
+
+  // Display the most likely emotion - currently done 'for fun' but could be used to give feedback to the user
+  temp.innerHTML = "Most likely emotion: " + highestEmotion + " with a probability of " + highestProbability.toFixed(2);
 }
 
 // Begin the music selection
@@ -91,18 +125,16 @@ function startMusicSelection() {
   }
 
   if (!accessGranted) {
-    alert("Please start the webcam first!");
+    alert("Please start the webcam first!"); // Maybe change to a more user-friendly alert
     return;
   }
 
   running = true;
-  alert("Placeholder for starting music selection");
 
-  /*while (running) {
-    // do some function based on the modelOutput variable
-  }*/ // (Either find a way to run this in the background or use a different approach to run the music selection as
-  // the while loop will block the rest of the code from running until it's done)
-  alert("music selection stopped")
+  // Enable side panel
+  sideContainer.style.display = "block";
+  // Enable most likely emotion display
+  temp.style.display = "block";
 }
 
 // Stop the music selection
@@ -114,5 +146,32 @@ function stopMusicSelection() {
 
   alert("Placeholder for stopping music selection");
   running = false;
+
+  // Disable side panel
+  sideContainer.style.display = "none";
+  // Disable most likely emotion display
+  temp.style.display = "none";
+}
+
+// Function to detect a face in the webcam frame
+function detectFace() {
+  // Get video element from webcam to base the detection on
+  video = webcam.canvas; 
+
+  // Face detection logic goes here
+}
+
+// Function to select music based on the detected emotion
+function selectMusic() {
+  // If music is already playing, don't start it again
+  if (musicPlaying) {
+    console.log("Music already playing!"); // Remove eventually as it will flood the console
+    return;
+  }
+
+  // Logic for selecting music - note that the most likely emotion is stored in the variable mostLikelyEmotion
+  console.log("mostLikelyEmotion: " + mostLikelyEmotion); // Remove when done
+
+  // logic
 }
 
