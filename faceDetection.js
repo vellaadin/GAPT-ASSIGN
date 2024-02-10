@@ -34,6 +34,20 @@ document.addEventListener("DOMContentLoaded", async function (event) {
   }
 });
 
+// Function to display modal with message for error handling
+function displayModal(message) {
+  const modal = document.getElementById('modalPopup');
+  const modalMessage = document.getElementById('modal-message');
+  modalMessage.textContent = message;
+  modal.style.display = "block";
+
+  // Close modal when user clicks on close button
+  const closeBtn = document.getElementsByClassName("close")[0];
+  closeBtn.onclick = function() {
+    modal.style.display = "none";
+  }
+}
+
 // Set up the webcam and start the video playback
 async function startWebcam() {
   // If the access has already been granted, don't request it again
@@ -52,6 +66,7 @@ async function startWebcam() {
     webcam = new tmImage.Webcam(width, height, flip); // width, height, flip
     await webcam.setup(); // Request access to the webcam
   } catch (e) {
+    displayModal("Couldn't access the webcam");
     console.log("Couldn't access the webcam: " + e); // Maybe change to a more user-friendly alert
     return;
   }
@@ -77,7 +92,7 @@ function stopWebcam() {
   }
 
   if (running) {
-    alert("Please stop the music selection first!"); // Maybe change to a more user-friendly alert
+    displayModal("Please stop the music selection first!");
     return;
   }
 
@@ -150,7 +165,7 @@ function startMusicSelection() {
   }
 
   if (!accessGranted) {
-    alert("Please start the webcam first!"); // Maybe change to a more user-friendly alert
+    displayModal("Please start the webcam first!"); // Maybe change to a more user-friendly alert
     return;
   }
 
@@ -172,7 +187,6 @@ function stopMusicSelection() {
     return;
   }
 
-  alert("Placeholder for stopping music selection");
   running = false;
 
   // Change the button text to 'Start'

@@ -3,11 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="Face Detection and emotion classification using OpenCV and a custom trained model">
+  <meta name="description" content="Emotion-driven music player through webcam facial detection and expression recognition">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="icon.png">
-  <title>Emotion classification using CV</title>
+  <title>SomeCoolName :))</title>
 
+  <link rel="preconnect" hSref="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Workbench&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Workbench&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -18,7 +23,18 @@
 
 <body>
   <!-- Title -->
-  <h1>Face Detection using OpenCV.js</h1>
+  <div class = "title-container" id="page-title">
+    <h1 class="title">Somecoolname - An Emotion-Driven Music Player</h1>
+    <h1 style="font-family: 'Workbench', sans-serif;">other font</h1>
+  </div>
+
+  <!-- Modal Error box -->
+  <div id="modalPopup" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p id="modal-message"></p>
+    </div>
+  </div>
 
   <!-- Playback and buttons -->
   <div class="vertical-container">
@@ -47,5 +63,8 @@
     </div>
   </div>
 
+  <footer>
+    <p> GAPT Project by Andrea, Jeremy & Adin </p>
+  </footer>
 </body>
 </html>

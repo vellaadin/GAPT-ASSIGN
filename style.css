@@ -1,36 +1,44 @@
+:root {
+    --black: #212121;
+    --dark-black: #111;
+    --white: #ececec;
+}
 
+body {
+    background-color: var(--black);
+    color: var(--white);
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
 
 h1 {
-    color: #000;
+    color: var(--white);
     font-size: 2em;
-    font-family: sans-serif;
     text-align: center;
-    margin-top: 0;
+    margin-top: 25px;
     margin-bottom: 15;
 }
 
 h2 {
-    color: #000;
+    color: var(--white);
     font-size: 1.5em;
-    font-family: sans-serif;
     text-align: center;
     margin-top: 0;
     margin-bottom: 0;
 }
 
 h3 {
-    color: #000;
+    color: var(--white);
     font-size: 1.2em;
-    font-family: sans-serif;
     text-align: center;
     margin-top: 0;
     margin-bottom: 5;
 }
 
 div {
-    color: #000;
+    color: var(--white);
     font-size: 1em;
-    font-family: sans-serif;
     text-align: center;
     margin-top: 0;
     margin-bottom: 2px;
@@ -40,13 +48,37 @@ button {
     margin-left: 10px;
     margin-right: 10px;
     padding: 10px;
-    background-color: #000;
-    color: #fff;
+    background-color: var(--dark-black);
+    color: var(--white);
     font-size: 1.5em;
-    font-family: sans-serif;
     text-align: center;
     border: 0;
     cursor: pointer;
+}
+
+footer {
+    color: var(--white);
+    text-align: center;
+    padding: 12px 10px 12px;
+}
+
+footer p {
+    margin: 0;
+    padding: 0;
+}
+
+.title-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+.title-container h1 {
+    font-family: 'Orbitron', sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 .vertical-container {
@@ -69,6 +101,40 @@ button {
     background-color: #b5b5b5;
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: var(--white);
+    color: var(--black);
+    font-size: 18px;
+    margin: 15% auto;
+    padding: 20px;
+    width: fit-content;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover, .close:focus {
+    color: var(--dark-black);
+    text-decoration: none;
+    cursor: pointer;
+}
+
 #webcam-placeholder {
     width: 640px;
     height: 480px;
@@ -83,7 +149,7 @@ button {
     margin: 0;
     padding: 0;
     background-color: #646464;
-}   
+}
 
 /* to be implemented... (I think we'll need it for opencv or smt, issa we see, at the very least it might help while testing) */
 #canvas {
