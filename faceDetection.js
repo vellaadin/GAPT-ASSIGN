@@ -32,6 +32,27 @@ document.addEventListener("DOMContentLoaded", async function (event) {
   for (let k = 0; k < maxPredictions; k++) { // and class labels
     labelContainer.appendChild(document.createElement("div"));
   }
+
+  //-----------------Set up info trigger-----------------
+  const infoButton = document.getElementById("info-button");
+  const infoArea = document.getElementById("info-area");
+  const hideInfoButton = document.getElementById("hide-info");
+
+  // Add event listener to show info if not already active
+  infoButton.addEventListener("click",
+    function() {
+      if (!infoArea.classList.contains("active")) {
+        infoArea.classList.add("active");
+      }
+    }
+  );
+
+  // Add event listener to hide info
+  hideInfoButton.addEventListener("click",
+    function() {
+      infoArea.classList.remove("active");
+    }
+  );
 });
 
 // Function to display modal with message for error handling

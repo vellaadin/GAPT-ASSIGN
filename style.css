@@ -2,6 +2,9 @@
     --black: #212121;
     --dark-black: #111;
     --white: #ececec;
+    --bright-white: #fff;
+    --link: rgb(0, 145, 255);
+    --link-highlight: rgb(0, 187, 255);
 }
 
 body {
@@ -53,6 +56,16 @@ button {
     font-size: 1.5em;
     text-align: center;
     border: 0;
+    cursor: pointer;
+}
+
+a {
+    color: var(--white);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--bright-white);
     cursor: pointer;
 }
 
@@ -129,10 +142,25 @@ footer p {
     font-weight: bold;
 }
 
-.close:hover, .close:focus {
+.close:hover,
+.close:focus {
     color: var(--dark-black);
     text-decoration: none;
     cursor: pointer;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 75%;
+    margin: 12px auto;
+    padding: 10px 0;
+}
+
+.highlight {
+    font-weight: bold;
+    font-size: 110%;
 }
 
 #webcam-placeholder {
@@ -158,4 +186,65 @@ footer p {
     margin: 0;
     padding: 0;
     background-color: #646464;
+}
+
+#info-area {
+    width: 40%;
+    margin: 30px auto;
+    padding: 20px;
+    padding-top: 0;
+    position: relative;
+    display: none;
+}
+
+#info-area.active {
+    display: block;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#info-area p {
+    margin: 8px;
+    padding: 0;
+}
+
+#info-area h2 {
+    margin: 10px;
+    margin-top: 0;
+    padding: 0;
+}
+
+#info-area a {
+    color: var(--link);
+    font-weight: bold;
+}
+
+#info-area a:hover {
+    color: var(--link-highlight);
+    cursor: pointer;
+}
+
+#hide-info {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-style: italic;
+}
+
+#hide-info:hover {
+    color: var(--bright-white);
+    cursor: pointer;
 }
