@@ -42,10 +42,20 @@ async function startWebcam() {
     return;
   }
 
-  // Convenience function to setup a webcam
-  const flip = true; // whether to flip the webcam
-  webcam = new tmImage.Webcam(640, 480, flip); // width, height, flip
-  await webcam.setup(); // request access to the webcam
+  // Webcam setup options
+  const flip = true; // Whether to flip the webcam
+  const width = 640; // Width of the webcam frame
+  const height = 480; // height of the webcam frame
+
+  try {
+    // Try to access the webcam
+    webcam = new tmImage.Webcam(width, height, flip); // width, height, flip
+    await webcam.setup(); // Request access to the webcam
+  } catch (e) {
+    console.log("Couldn't access the webcam: " + e); // Maybe change to a more user-friendly alert
+    return;
+  }
+
   await webcam.play(); // Start taking webcam input
   window.requestAnimationFrame(loop); // Start updating the webcam frame (playback)
 
@@ -53,6 +63,9 @@ async function startWebcam() {
   document.getElementById('webcam-placeholder').style.display = 'none'; // Hide placeholder
 
   accessGranted = true;// Enable the flag
+
+  // Change the button text to 'Disable Webcam'
+  document.getElementById("toggleCam").innerHTML = "Disable Webcam";
 }
 
 // Stop the webcam and remove the video playback
@@ -74,6 +87,18 @@ function stopWebcam() {
 
   document.getElementById('webcam-placeholder').style.display = 'block'; // Toggle placeholder
   accessGranted = false; // Disable the flag
+
+  // Change the button text to 'Enable Webcam'
+  document.getElementById("toggleCam").innerHTML = "Enable Webcam";
+}
+
+// Function to toggle the webcam
+function toggleWebcam() {
+  if (accessGranted) {
+    stopWebcam();
+  } else {
+    startWebcam();
+  }
 }
 
 // Loop to keep updating the webcam frame (and do more if music selection is running)
@@ -131,6 +156,9 @@ function startMusicSelection() {
 
   running = true;
 
+  // Change the button text to 'Stop'
+  document.getElementById("toggleMusicSelection").innerHTML = "Stop";
+
   // Enable side panel
   sideContainer.style.display = "block";
   // Enable most likely emotion display
@@ -147,6 +175,9 @@ function stopMusicSelection() {
   alert("Placeholder for stopping music selection");
   running = false;
 
+  // Change the button text to 'Start'
+  document.getElementById("toggleMusicSelection").innerHTML = "Start";
+
   // Disable side panel
   sideContainer.style.display = "none";
   // Disable most likely emotion display
@@ -159,6 +190,15 @@ function detectFace() {
   video = webcam.canvas; 
 
   // Face detection logic goes here
+}
+
+// Function to toggle the music selection process
+function toggleMusicSelection() {
+  if (running) {
+    stopMusicSelection();
+  } else {
+    startMusicSelection();
+  }
 }
 
 // Function to select music based on the detected emotion
