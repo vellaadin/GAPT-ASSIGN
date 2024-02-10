@@ -42,10 +42,20 @@ async function startWebcam() {
     return;
   }
 
-  // Convenience function to setup a webcam
-  const flip = true; // whether to flip the webcam
-  webcam = new tmImage.Webcam(640, 480, flip); // width, height, flip
-  await webcam.setup(); // request access to the webcam
+  // Webcam setup options
+  const flip = true; // Whether to flip the webcam
+  const width = 640; // Width of the webcam frame
+  const height = 480; // height of the webcam frame
+
+  try {
+    // Try to access the webcam
+    webcam = new tmImage.Webcam(width, height, flip); // width, height, flip
+    await webcam.setup(); // Request access to the webcam
+  } catch (e) {
+    console.log("Couldn't access the webcam: " + e); // Maybe change to a more user-friendly alert
+    return;
+  }
+  
   await webcam.play(); // Start taking webcam input
   window.requestAnimationFrame(loop); // Start updating the webcam frame (playback)
 
