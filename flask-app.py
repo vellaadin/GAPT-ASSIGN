@@ -17,7 +17,7 @@ def index():
 # Page to display when content is not found
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('content_not_found.html'), 404
+    return render_template('content_not_found.html', error=error), 404
 
 if __name__ == '__main__':
     app.run(debug=True)

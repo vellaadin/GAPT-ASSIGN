@@ -199,10 +199,14 @@ footer p {
 
 #info-area.active {
     display: block;
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeInFromBottom 0.5s ease-out;
 }
 
-@keyframes fadeIn {
+#info-area.inactive {
+    animation: fadeOutToBottom 0.5s ease-out;
+}
+
+@keyframes fadeInFromBottom {
     from {
         opacity: 0;
         transform: translateY(20px);
@@ -211,6 +215,18 @@ footer p {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutToBottom {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(20px);
     }
 }
 

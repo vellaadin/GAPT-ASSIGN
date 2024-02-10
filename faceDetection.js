@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async function (event) {
   // Add event listener to hide info
   hideInfoButton.addEventListener("click",
     function() {
-      infoArea.classList.remove("active");
+      animateAndHide(infoArea, "inactive", 500, "active");
     }
   );
 });
@@ -67,6 +67,22 @@ function displayModal(message) {
   closeBtn.onclick = function() {
     modal.style.display = "none";
   }
+}
+
+// Function to animate and hide an element
+function animateAndHide(element, animationClass, duration, removeClass = null) {
+  element.classList.add(animationClass);
+  setTimeout(
+    function() {
+      element.classList.remove(animationClass);
+      if (removeClass) { // Case where we want to remove a class after the animation (e.g an active class)
+        element.classList.remove(removeClass);
+      }
+      else {
+        element.style.display = "none";
+      }
+    }, duration
+  );
 }
 
 // Set up the webcam and start the video playback
