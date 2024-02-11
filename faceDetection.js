@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async function (event) {
   // Add event listener to hide info
   hideInfoButton.addEventListener("click",
     function() {
-      animateAndHide(infoArea, "inactive", 500, "active");
+      animateAndHide(infoArea, "inactive", 498, "active"); // hide slightly before removing the active class
     }
   );
 });

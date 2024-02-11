@@ -1,6 +1,7 @@
 :root {
     --black: #212121;
     --dark-black: #111;
+    --light-black: #333;
     --white: #ececec;
     --bright-white: #fff;
     --link: rgb(0, 145, 255);
@@ -54,8 +55,14 @@ button {
     background-color: var(--dark-black);
     color: var(--white);
     font-size: 1.5em;
+    font-family: 'Ubuntu', sans-serif;
     text-align: center;
     border: 0;
+}
+
+button:hover {
+    background-color: var(--light-black);
+    color: var(--bright-white);
     cursor: pointer;
 }
 
@@ -161,6 +168,14 @@ footer p {
 .highlight {
     font-weight: bold;
     font-size: 110%;
+}
+
+#buttons {
+    display: flex;
+    justify-content: center;
+    margin: 10px auto;
+    margin-top: 0;
+    padding: 0px;
 }
 
 #webcam-placeholder {
