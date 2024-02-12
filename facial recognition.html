@@ -1,12 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang = "en">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="Face Detection and emotion classification using OpenCV and a custom trained model">
+  <meta name="description" content="Emotion-driven music player through webcam facial detection and expression recognition">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emotion classification using CV</title>
+  <link rel="icon" href="icon.png">
+  <title>placeholdername :))</title>
 
+  <link rel="preconnect" hSref="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Workbench&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Workbench&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -17,36 +24,106 @@
 
 <body>
   <!-- Title -->
-  <h1>Face Detection using OpenCV.js</h1>
+  <div class = "title-container" id="page-title">
+    <h1 class="title">placeholdername - An Emotion-Driven Music Player</h1>
+    <h1 style="font-family: 'Workbench', sans-serif;">other font</h1>
+  </div>
+
+  <!-- Modal Error box -->
+  <div id="modalPopup" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p id="modal-message"></p>
+    </div>
+  </div>
 
   <!-- Playback and buttons -->
-  <div class="vertical-container">
-    <!-- buttons -->
-    <div class = "horizontal-container">
-      <!-- Enable/Disable Webcam Buttons -->
-      <button id="requestButton" onclick="startWebcam()">Enable Webcam</button>
-      <button id="disableButton" onclick="stopWebcam()">Disable Webcam</button>
-      <!-- Start/Stop Buttons -->
-      <button id="startButton" onclick="startMusicSelection()">Start</button>
-      <button id="stopButton" onclick="stopMusicSelection()">Stop</button>
-    </div>
+  <div id="webcam-section">
+    <div class="vertical-container">
+      <!-- buttons -->
+      <div id = "buttons" class="vertical-container">
+        <div class = "buttonSet">
+          <!-- Enable/Disable Webcam Buttons -->
+          <button id="toggleCam" onclick="toggleWebcam()">Enable Webcam</button>
+          <!-- Start/Stop Buttons -->
+          <button id="toggleMusicSelection" onclick="toggleMusicSelection()">Start</button>
+          <!-- Toggle Display button -->
+          <button id="toggleDisplay" onclick="toggleDisplay()">Hide Display</button>
+        </div>
+        <div class = "buttonSet" id="extraButtons" style="display: none;">
+          <!-- Show facial detection visualisation -->
+          <button id="toggleBoundingBoxes" onclick="toggleBoundingBoxes()">Draw Bounding boxes</button>
+          <!-- Show Classification labels -->
+          <button id="toggleLabels" onclick="toggleLabels()">Show Labels</button>
+        </div>
+      </div>
 
-    <div>
-      <h2 id="emotion" style="display: none;">Placeholder Emotion</h2>
-    </div>
+      <div id="emotion-container"  style="display: none;">
+        <h2 id="emotion">Placeholder Emotion</h2>
+      </div>
 
-    <!-- Playback and labels -->
-    <div class ="horizontal-container">
-      <!-- Video playback -->
-      <div id="webcam-placeholder"></div>
-      <div id="webcam-container"></div>
-      <!-- Labels -->
-      <div class = "vertical-container" id="side-container" style="display: none;">
-        <h3>Labels and their values:</h2>
-        <div id="label-container"></div>
+      <!-- Playback and labels -->
+      <div class ="horizontal-container" id="webcam-and-labels-container">
+        <!-- Video playback -->
+        <div id="webcam-placeholder">
+          <p> Click Enable Webcam to view playback!</p>
+        </div>
+        <div id="webcam-container"></div>
+        <!-- Labels -->
+        <div class = "vertical-container" id="side-container">
+          <h3>Labels and their values:</h2>
+          <div id="label-container"></div>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- Music Area -->
+  <div id="music-section">
+    <h2>Music</h2>
+    <div id="musicPlaceHolder">
+      <p>Click start to begin listening</p>
+    </div>
+    <!-- Something... -->
+  </div>
+
+  <!-- Info Area -->
+  <div id="info-area">
+
+    <div id="hide-info">Hide</div>
+
+    <div class="info-group">
+      <h2>What is this?</h2>
+      <p>
+        <span class="highlight">placeholdername</span> is an emotion-driven music player that uses your webcam to detect
+        and identify your facial expressions using a machine learning model and plays music based on your mood.
+      </p>
+    </div>
+
+    <div class="info-group">
+      <h2>How does it work?</h2>
+      <p>
+        <span class="highlight">placeholdername</span> makes use of your webcam feed to find your face using 
+        <a href="https://opencv.org/" target="_blank"> OpenCV </a> and then uses a machine learning model
+        trained using <a href="https://teachablemachine.withgoogle.com/" target="_blank"> Google Teachable Machine </a>
+        to identify your facial expression. The model then uses this information to play music from a curated selection
+        based on your mood.
+      </p>
+    </div>
+
+    <div class="info-group">
+      <h2>Why was it made?</h2>
+      <p>
+        <span class="highlight">placeholdername</span> was made as a project for the GAPT course at the University of Malta.
+        It was made to demonstrate the use of machine learning and computer vision in a real world application.
+      </p>
+    </div>
+
+  </div>
+
+  <footer>
+    <p> GAPT Project by Andrea, Jeremy & Adin </p>
+    <p><a id="info-button" href="#info-area"> Click Here to find out More... </a></p>
+  </footer>
 </body>
 </html>

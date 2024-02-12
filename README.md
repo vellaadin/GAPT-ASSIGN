@@ -20,4 +20,22 @@ Ideally do work in a new branch to make life easier :))
 - Music selection component (logic to select a music track given a predicted emotion)
 - Finding music
 - Further site building and styling
+
+## Useful GAPT Proposal Information:
+### Title
+Emotion-driven music player: a hands-on computer vision,  
+machine learning and human-computer interaction project
+ 
+### Short Description of Task
+The aim of this project involves the creation of a music 
+player capable of selecting songs according to the user's present emotional state, as 
+determined by their facial expressions. This endeavor offers students the chance to 
+delve into computer vision, machine learning, and human-computer interaction, all 
+while tackling a practical problem and its real-world application. Throughout the 
+project, open-source tools and publicly available datasets will be used. 
+ 
+### Deliverables
+1) A web-based application,  
+2) A report describing your approach and your findings,  
+3) a short demo video
  
