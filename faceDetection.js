@@ -1,15 +1,18 @@
 var accessGranted = false; // Flag to check if the webcam access has been granted
 var running = false; // Flag to check if the music selection process is running (face detection, emotion prediction, music selection)
 var musicPlaying = false; // Flag to check if music is currently playing
+var showLabels = false; // Flag to see whether all labels are to be displayed
+var showBoundingBoxes = false; // Flag to see whether bounding boxes should be drawn on detected faces
 var mostLikelyEmotion = ""; // The most likely emotion detected by the model
 var sideContainer; // The container for the side panel showing the labels
+var displayWebcamAndLabels = true;
 
 // The link to the model - realistically you'd want to hide this in a .env file or something
 const URL = "https://teachablemachine.withgoogle.com/models/l4Oo33mJS/";
 
 let model, webcam, labelContainer, maxPredictions; // Variables used by the model
 
-var temp; // May or may not remove - used to display the most likely emotion, used as an exercise to extract the most likely emotion from the model
+var mostLikelyEmotionDisplay; // May or may not remove - used to display the most likely emotion, used as an exercise to extract the most likely emotion from the model
 
 // Wait for the DOM to be ready before trying to access the video element (otherwise it might not be loaded yet)
 document.addEventListener("DOMContentLoaded", async function (event) {
@@ -17,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async function (event) {
   const modelURL = URL + "model.json";
   const metadataURL = URL + "metadata.json";
 
-  temp = document.getElementById("emotion");
+  mostLikelyEmotionDisplay = document.getElementById("emotion");
   sideContainer = document.getElementById("side-container");
 
   // load the model and metadata
@@ -137,7 +140,7 @@ function stopWebcam() {
   webcam.canvas.remove(); // Remove webcam playback from page
   window.cancelAnimationFrame(loop); // Stop updating the webcam frame
 
-  document.getElementById('webcam-placeholder').style.display = 'block'; // Toggle placeholder
+  document.getElementById('webcam-placeholder').style.display = 'flex '; // Toggle placeholder
   accessGranted = false; // Disable the flag
 
   // Change the button text to 'Enable Webcam'
@@ -150,6 +153,55 @@ function toggleWebcam() {
     stopWebcam();
   } else {
     startWebcam();
+  }
+}
+
+// Function to toggle drawing of bounding boxes around detected faces
+function toggleBoundingBoxes() {
+  displayModal("Placeholder for drawing bounding boxes")
+
+  showBoundingBoxes = !showBoundingBoxes;
+}
+
+// Function to toggle the display of labels
+function toggleLabels(animate = false) {
+  showLabels = !showLabels;
+  var showLabelsButton = document.getElementById("toggleLabels");
+
+  if (showLabels) {
+    sideContainer.style.display = "Block"
+    showLabelsButton.innerHTML = "Hide Labels";
+  }
+  else {
+    sideContainer.style.display="None";
+    showLabelsButton.innerHTML = "Show Labels";
+  }
+
+}
+
+// Function to toggle the visual display (Playback and labels)
+function toggleDisplay() {
+  displayWebcamAndLabels = !displayWebcamAndLabels;
+  var container = document.getElementById("webcam-and-labels-container");
+  var button = document.getElementById("toggleDisplay");
+
+  var additionalButtons = document.getElementById("extraButtons");
+
+  if(displayWebcamAndLabels) {
+    container.style.display = "Flex";
+    button.innerHTML = "Hide Display";
+
+    if(running) {
+      additionalButtons.style.display = "Flex";
+    }
+  }
+  else {
+    container.style.display = "None";
+    button.innerHTML = "Show Display";
+
+    if(running) {
+      additionalButtons.style.display = "None";
+    }
   }
 }
 
@@ -191,7 +243,7 @@ async function predict() {
   mostLikelyEmotion = highestEmotion; // Make the most likely emotion available to other functions
 
   // Display the most likely emotion - currently done 'for fun' but could be used to give feedback to the user
-  temp.innerHTML = "Most likely emotion: " + highestEmotion + " with a probability of " + highestProbability.toFixed(2);
+  mostLikelyEmotionDisplay.innerHTML = "Most likely emotion: " + highestEmotion + " with a probability of " + highestProbability.toFixed(2);
 }
 
 // Begin the music selection
@@ -211,10 +263,16 @@ function startMusicSelection() {
   // Change the button text to 'Stop'
   document.getElementById("toggleMusicSelection").innerHTML = "Stop";
 
-  // Enable side panel
-  sideContainer.style.display = "block";
+  // Hide the placeholder for the music player
+  document.getElementById("musicPlaceHolder").style.display = "None"; 
+
+  if (displayWebcamAndLabels) {
+    // Show bounding boxes button and labels button
+    document.getElementById("extraButtons").style.display = "Flex";
+  }
+
   // Enable most likely emotion display
-  temp.style.display = "block";
+  document.getElementById("emotion-container").style.display = "Block";
 }
 
 // Stop the music selection
@@ -229,18 +287,20 @@ function stopMusicSelection() {
   // Change the button text to 'Start'
   document.getElementById("toggleMusicSelection").innerHTML = "Start";
 
-  // Disable side panel
-  sideContainer.style.display = "none";
+  // Show the placeholder for the music player
+  document.getElementById("musicPlaceHolder").style.display = "Block"; 
+
+  if(displayWebcamAndLabels) {
+    // Hide bounding boxes button and labels button
+    document.getElementById("extraButtons").style.display = "None";
+  }
+
+  // Disable labels if activated
+  if(showLabels) {
+    toggleLabels();
+  }
   // Disable most likely emotion display
-  temp.style.display = "none";
-}
-
-// Function to detect a face in the webcam frame
-function detectFace() {
-  // Get video element from webcam to base the detection on
-  video = webcam.canvas; 
-
-  // Face detection logic goes here
+  document.getElementById("emotion-container").style.display = "None";
 }
 
 // Function to toggle the music selection process
@@ -261,8 +321,15 @@ function selectMusic() {
   }
 
   // Logic for selecting music - note that the most likely emotion is stored in the variable mostLikelyEmotion
-  console.log("mostLikelyEmotion: " + mostLikelyEmotion); // Remove when done
-
+  //console.log("mostLikelyEmotion: " + mostLikelyEmotion); // Remove when done
+  
   // logic
 }
 
+// Function to detect a face in the webcam frame
+function detectFace() {
+  // Get video element from webcam to base the detection on
+  video = webcam.canvas; 
+
+  // Face detection logic goes here
+}

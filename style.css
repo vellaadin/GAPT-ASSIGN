@@ -6,6 +6,9 @@
     --bright-white: #fff;
     --link: rgb(0, 145, 255);
     --link-highlight: rgb(0, 187, 255);
+    --grey: #808080;
+    --light-grey: #b5b5b5;
+    --dark-grey: #646464;
 }
 
 body {
@@ -87,6 +90,16 @@ footer p {
     padding: 0;
 }
 
+footer a {
+    color: var(--link);
+    font-weight: bold;
+}
+
+footer a.hover {
+    color: var(--link-highlight) !important;
+    cursor: pointer;
+}
+
 .title-container {
     display: flex;
     flex-direction: column;
@@ -108,6 +121,7 @@ footer p {
     width: fit-content;
     margin: 25px auto;
     padding: 20px;
+    /* Consider removing backgrounds on these containers for a cleaner look!!! */
     background-color: #808080;
 }
 
@@ -170,9 +184,21 @@ footer p {
     font-size: 110%;
 }
 
-#buttons {
+.buttonSet {
     display: flex;
+    flex-direction: row;
+    margin: 0px auto;
+    margin-top: 10px;
+}
+
+#emotion-container {
+    width: 600px;
+    margin: 10px auto;
+}
+
+#buttons {
     justify-content: center;
+    width: fit-content;
     margin: 10px auto;
     margin-top: 0;
     padding: 0px;
@@ -184,6 +210,10 @@ footer p {
     margin: 0;
     padding: 0;
     background-color: #646464;
+    font-size: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #videoElement {
@@ -203,6 +233,16 @@ footer p {
     background-color: #646464;
 }
 
+#music-section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 75%;
+    margin: 36px auto;
+    padding: 10px 0;
+
+}
+
 #info-area {
     width: 40%;
     margin: 30px auto;
@@ -219,6 +259,43 @@ footer p {
 
 #info-area.inactive {
     animation: fadeOutToBottom 0.5s ease-out;
+}
+
+#side-container {
+    display: none;
+}
+
+#side-container.active {
+    display: block;
+    animation: fadeInFromLeft 0.5s ease-out;
+}
+
+#side-container.inactive {
+    animation: fadeOutToLeft 0.5s ease-out;
+}
+
+@keyframes fadeInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOutToLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(-20px);
+    } 
 }
 
 @keyframes fadeInFromBottom {
