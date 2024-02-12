@@ -111,6 +111,7 @@ async function startWebcam() {
     return;
   }
 
+
   await webcam.play(); // Start taking webcam input
   window.requestAnimationFrame(loop); // Start updating the webcam frame (playback)
 
