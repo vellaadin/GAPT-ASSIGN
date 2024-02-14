@@ -9,13 +9,9 @@ var displayWebcamAndLabels = true;
 var faceCascade;
 var OpenCVReady = false;
 var cascadeLoaded = false;
+var modelLoaded = false;
 var timeOut = 0;
 var canvasDOM;
-
-// The link to the model - TODO - access the model from the server
-const URL = "https://teachablemachine.withgoogle.com/models/l4Oo33mJS/";
-
-
 
 let model, webcam, labelContainer, maxPredictions; // Variables used by the model
 
@@ -25,18 +21,12 @@ var mostLikelyEmotionDisplay; // May or may not remove - used to display the mos
 document.addEventListener("DOMContentLoaded", async function (event) {
   //-----------------Set up the model-----------------
 
-  const modelURL = URL + "model.json";
-  const metadataURL = URL + "metadata.json";
+  // Load the teachable machine model
+  await loadImageModel();
+  maxPredictions = model.getTotalClasses();
 
   mostLikelyEmotionDisplay = document.getElementById("emotion");
   sideContainer = document.getElementById("side-container");
-
-  // load the model and metadata
-  // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-  // or files from your local hard drive
-  // Note: the pose library adds "tmImage" object to your window (window.tmImage)
-  model = await tmImage.load(modelURL, metadataURL);
-  maxPredictions = model.getTotalClasses();
 
   // append elements to the DOM
   labelContainer = document.getElementById("label-container");
@@ -66,6 +56,23 @@ document.addEventListener("DOMContentLoaded", async function (event) {
   );
 });
 
+// Function to load the teachable machine model from flask
+async function loadImageModel() {
+  try {
+    // Specify paths to the model and metadata files served by Flask
+    const modelURL = '/model';
+    const metadataURL = '/metadata';
+
+    // Load the model
+    model = await tmImage.load(modelURL, metadataURL);
+    modelLoaded = true;
+    console.log('Model loaded successfully');
+  } catch (error) {
+    console.error('Error loading model:', error);
+    displayModal("Error loading image model");
+  }
+}
+
 // Function to ensure OpenCV is loaded before trying to use it
 function openCVLoaded() {
   console.log("OpenCV onload triggered, waiting 1 second to ensure OpenCV is fully loaded");
@@ -73,10 +80,6 @@ function openCVLoaded() {
     OpenCVReady = true;
     console.log("OpenCV is ready");
     loadCascade();
-    /*createFileFromUrl('/face_cascade', localFileUrl => {
-      // Load the cascade from the local file URL
-      faceCascade.load(localFileUrl);
-    });*/
   }, 1000); // 1 second delay to ensure OpenCV is fully loaded
 }
 
@@ -84,8 +87,9 @@ function openCVLoaded() {
 function loadCascade() {
   if (OpenCVReady) {
     const cascadeUrl = "https://github.com/opencv/opencv/blob/master/data/haarcascades/haarcascade_frontalcatface.xml";
+    // ^ Use above URL to load the cascade from the internet if the local file doesn't work
     faceCascade = new cv.CascadeClassifier();
-    faceCascade.load(cascadeUrl);
+    faceCascade.load('/face_cascade');
     cascadeLoaded = true;
     console.log("Cascade loaded");
   }
@@ -109,7 +113,7 @@ function displayModal(message) {
 
   // Close modal when user clicks on close button
   const closeBtn = document.getElementsByClassName("close")[0];
-  closeBtn.onclick = function() {
+  closeBtn.onclick = function () {
     modal.style.display = "none";
   }
 }
@@ -322,6 +326,11 @@ function startMusicSelection() {
     return;
   }
 
+  if (!modelLoaded) {
+    displayModal("Model not loaded, unable to identify emotions!");
+    return;
+  }
+
   running = true;
 
   // Change the button text to 'Stop'
@@ -396,7 +405,7 @@ async function detectFace() {
   video = webcam.canvas;
 
   // For your convenience I offered a loaded cascade (faceCascade) though, you may change as much as you like
-  if(!faceCascade) {
+  if (!faceCascade) {
     console.log("Cascade not loaded");
     return;
   }
