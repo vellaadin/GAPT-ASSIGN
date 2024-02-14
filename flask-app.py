@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 
 app = Flask(__name__)
 
@@ -13,6 +13,11 @@ URL = "https://teachablemachine.withgoogle.com/models/l4Oo33mJS/"; # URL of the 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+# Feed haarcascade_frontalface_default.xml file to the client
+@app.route('/face_cascade')
+def get_cascade():
+    return send_from_directory('static', 'haarcascade_frontalface_default.xml')
 
 # Page to display when content is not found
 @app.errorhandler(404)

@@ -6,9 +6,16 @@ var showBoundingBoxes = false; // Flag to see whether bounding boxes should be d
 var mostLikelyEmotion = ""; // The most likely emotion detected by the model
 var sideContainer; // The container for the side panel showing the labels
 var displayWebcamAndLabels = true;
+var faceCascade;
+var OpenCVReady = false;
+var cascadeLoaded = false;
+var timeOut = 0;
+var canvasDOM;
 
-// The link to the model - realistically you'd want to hide this in a .env file or something
+// The link to the model - TODO - access the model from the server
 const URL = "https://teachablemachine.withgoogle.com/models/l4Oo33mJS/";
+
+
 
 let model, webcam, labelContainer, maxPredictions; // Variables used by the model
 
@@ -17,6 +24,7 @@ var mostLikelyEmotionDisplay; // May or may not remove - used to display the mos
 // Wait for the DOM to be ready before trying to access the video element (otherwise it might not be loaded yet)
 document.addEventListener("DOMContentLoaded", async function (event) {
   //-----------------Set up the model-----------------
+
   const modelURL = URL + "model.json";
   const metadataURL = URL + "metadata.json";
 
@@ -43,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async function (event) {
 
   // Add event listener to show info if not already active
   infoButton.addEventListener("click",
-    function() {
+    function () {
       if (!infoArea.classList.contains("active")) {
         infoArea.classList.add("active");
       }
@@ -52,11 +60,45 @@ document.addEventListener("DOMContentLoaded", async function (event) {
 
   // Add event listener to hide info
   hideInfoButton.addEventListener("click",
-    function() {
+    function () {
       animateAndHide(infoArea, "inactive", 498, "active"); // hide slightly before removing the active class
     }
   );
 });
+
+// Function to ensure OpenCV is loaded before trying to use it
+function openCVLoaded() {
+  console.log("OpenCV onload triggered, waiting 1 second to ensure OpenCV is fully loaded");
+  setTimeout(function () {
+    OpenCVReady = true;
+    console.log("OpenCV is ready");
+    loadCascade();
+    /*createFileFromUrl('/face_cascade', localFileUrl => {
+      // Load the cascade from the local file URL
+      faceCascade.load(localFileUrl);
+    });*/
+  }, 1000); // 1 second delay to ensure OpenCV is fully loaded
+}
+
+// Function to load the cascade
+function loadCascade() {
+  if (OpenCVReady) {
+    const cascadeUrl = "https://github.com/opencv/opencv/blob/master/data/haarcascades/haarcascade_frontalcatface.xml";
+    faceCascade = new cv.CascadeClassifier();
+    faceCascade.load(cascadeUrl);
+    cascadeLoaded = true;
+    console.log("Cascade loaded");
+  }
+  else {
+    console.log("OpenCV not ready yet, waiting 1 second to try again (attempt " + ++timeOut + ")");
+    if (timeOut < 5) {
+      setTimeout(loadCascade, 1000);
+    }
+    else {
+      console.log("OpenCV not ready after 5 attempts, cascade not loaded");
+    }
+  }
+}
 
 // Function to display modal with message for error handling
 function displayModal(message) {
@@ -76,7 +118,7 @@ function displayModal(message) {
 function animateAndHide(element, animationClass, duration, removeClass = null) {
   element.classList.add(animationClass);
   setTimeout(
-    function() {
+    function () {
       element.classList.remove(animationClass);
       if (removeClass) { // Case where we want to remove a class after the animation (e.g an active class)
         element.classList.remove(removeClass);
@@ -115,8 +157,11 @@ async function startWebcam() {
   await webcam.play(); // Start taking webcam input
   window.requestAnimationFrame(loop); // Start updating the webcam frame (playback)
 
-  document.getElementById("webcam-container").appendChild(webcam.canvas); // Add webcam playback to page
+  const webcamContainer = document.getElementById("webcam-container");
+  webcamContainer.style.display = "flex"; // Show the webcam container
+  webcamContainer.appendChild(webcam.canvas); // Add webcam playback to page
   document.getElementById('webcam-placeholder').style.display = 'none'; // Hide placeholder
+  canvasDOM = document.getElementById('webcam-container').getElementsByTagName('canvas')[0];
 
   accessGranted = true;// Enable the flag
 
@@ -127,7 +172,7 @@ async function startWebcam() {
 // Stop the webcam and remove the video playback
 function stopWebcam() {
   // If the access to the webcam hasn't been granted yet, don't stop it
-  if(!accessGranted) {
+  if (!accessGranted) {
     console.log("No webcam access to stop!");
     return;
   }
@@ -142,6 +187,7 @@ function stopWebcam() {
   window.cancelAnimationFrame(loop); // Stop updating the webcam frame
 
   document.getElementById('webcam-placeholder').style.display = 'flex '; // Toggle placeholder
+  document.getElementById('webcam-container').style.display = 'none'; // Hide the webcam container
   accessGranted = false; // Disable the flag
 
   // Change the button text to 'Enable Webcam'
@@ -162,6 +208,18 @@ function toggleBoundingBoxes() {
   displayModal("Placeholder for drawing bounding boxes")
 
   showBoundingBoxes = !showBoundingBoxes;
+  if (showBoundingBoxes) {
+    // Draw bounding boxes
+    document.getElementById("toggleBoundingBoxes").innerHTML = "Hide Bounding Boxes";
+    document.getElementById("canvasOutput").style.display = "Block";
+    document.getElementById("webcam-container").style.display = "None";
+  }
+  else {
+    // Remove bounding boxes
+    document.getElementById("toggleBoundingBoxes").innerHTML = "Show Bounding Boxes";
+    document.getElementById("canvasOutput").style.display = "None";
+    document.getElementById("webcam-container").style.display = "Flex";
+  }
 }
 
 // Function to toggle the display of labels
@@ -174,7 +232,7 @@ function toggleLabels(animate = false) {
     showLabelsButton.innerHTML = "Hide Labels";
   }
   else {
-    sideContainer.style.display="None";
+    sideContainer.style.display = "None";
     showLabelsButton.innerHTML = "Show Labels";
   }
 
@@ -188,11 +246,11 @@ function toggleDisplay() {
 
   var additionalButtons = document.getElementById("extraButtons");
 
-  if(displayWebcamAndLabels) {
+  if (displayWebcamAndLabels) {
     container.style.display = "Flex";
     button.innerHTML = "Hide Display";
 
-    if(running) {
+    if (running) {
       additionalButtons.style.display = "Flex";
     }
   }
@@ -200,7 +258,7 @@ function toggleDisplay() {
     container.style.display = "None";
     button.innerHTML = "Show Display";
 
-    if(running) {
+    if (running) {
       additionalButtons.style.display = "None";
     }
   }
@@ -212,8 +270,8 @@ async function loop() {
 
   // If the music selection process is running, run the face detection, emotion prediction and music selection
   if (running) {
-    detectFace(); // Detect a face in the webcam frame
-    predict(); // Predict the emotion of the face
+    await detectFace(); // Detect a face in the webcam frame
+    await predict(); // Predict the emotion of the face
     selectMusic(); // Select music based on the predicted emotion
     // Consider different music selection logic e.g taking the highest value over a period of time rather than just the current frame
   }
@@ -259,13 +317,18 @@ function startMusicSelection() {
     return;
   }
 
+  if (!cascadeLoaded) {
+    displayModal("Cascade not loaded, unable to detect faces!");
+    return;
+  }
+
   running = true;
 
   // Change the button text to 'Stop'
   document.getElementById("toggleMusicSelection").innerHTML = "Stop";
 
   // Hide the placeholder for the music player
-  document.getElementById("musicPlaceHolder").style.display = "None"; 
+  document.getElementById("musicPlaceHolder").style.display = "None";
 
   if (displayWebcamAndLabels) {
     // Show bounding boxes button and labels button
@@ -289,15 +352,15 @@ function stopMusicSelection() {
   document.getElementById("toggleMusicSelection").innerHTML = "Start";
 
   // Show the placeholder for the music player
-  document.getElementById("musicPlaceHolder").style.display = "Block"; 
+  document.getElementById("musicPlaceHolder").style.display = "Block";
 
-  if(displayWebcamAndLabels) {
+  if (displayWebcamAndLabels) {
     // Hide bounding boxes button and labels button
     document.getElementById("extraButtons").style.display = "None";
   }
 
   // Disable labels if activated
-  if(showLabels) {
+  if (showLabels) {
     toggleLabels();
   }
   // Disable most likely emotion display
@@ -323,14 +386,24 @@ function selectMusic() {
 
   // Logic for selecting music - note that the most likely emotion is stored in the variable mostLikelyEmotion
   //console.log("mostLikelyEmotion: " + mostLikelyEmotion); // Remove when done
-  
+
   // logic
 }
 
 // Function to detect a face in the webcam frame
-function detectFace() {
+async function detectFace() {
   // Get video element from webcam to base the detection on
-  video = webcam.canvas; 
+  video = webcam.canvas;
 
-  // Face detection logic goes here
+  // For your convenience I offered a loaded cascade (faceCascade) though, you may change as much as you like
+  if(!faceCascade) {
+    console.log("Cascade not loaded");
+    return;
+  }
+
+  // Use canvas to draw the output
+  const canvas = document.getElementById('canvasOutput');
+  //console.log("Detecting face");
+
+
 }

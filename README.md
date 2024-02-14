@@ -21,6 +21,10 @@ Ideally do work in a new branch to make life easier :))
 - Finding music
 - Further site building and styling
 
+## Using flask:
+In order to launch flask run the flask-app.py script, once done you can connect to the site through 'http://localhost:5000/'
+
+
 ## Useful GAPT Proposal Information:
 ### Title
 Emotion-driven music player: a hands-on computer vision,  
