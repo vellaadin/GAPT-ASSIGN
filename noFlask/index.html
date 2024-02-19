@@ -18,15 +18,15 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-  <script src="https://docs.opencv.org/4.5.4/opencv.js"></script>
   <script src="faceDetection.js"></script>
+  <script async src="https://docs.opencv.org/4.5.4/opencv.js" onload="openCVLoaded()" type="text/javascript"></script>
 </head>
 
 <body>
   <!-- Title -->
   <div class = "title-container" id="page-title">
     <h1 class="title">placeholdername - An Emotion-Driven Music Player</h1>
-    <h1 style="font-family: 'Workbench', sans-serif;">other font</h1>
+    <h1 style="font-family: \'Workbench\', sans-serif;">other font</h1>
   </div>
 
   <!-- Modal Error box -->
@@ -68,7 +68,10 @@
         <div id="webcam-placeholder">
           <p> Click Enable Webcam to view playback!</p>
         </div>
-        <div id="webcam-container"></div>
+        <div id="webcam-container" style="display: none;"></div>
+        <div id="opencv-container" style="display: none;">
+          <canvas id="canvasOutput" width="640" height="480"></canvas>
+        </div>
         <!-- Labels -->
         <div class = "vertical-container" id="side-container">
           <h3>Labels and their values:</h2>
