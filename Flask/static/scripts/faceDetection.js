@@ -285,7 +285,8 @@ async function loop() {
 
 // run the webcam image through the image model
 async function predict() {
-  // predict can take in an image, video or canvas html element
+  try{
+      // predict can take in an image, video or canvas html element
   const prediction = await model.predict(webcam.canvas); // The input of this function will be the output of opencv once done
 
   let highestProbability = 0; // Used to find the most likely emotion
@@ -307,6 +308,9 @@ async function predict() {
 
   // Display the most likely emotion - currently done 'for fun' but could be used to give feedback to the user
   mostLikelyEmotionDisplay.innerHTML = "Most likely emotion: " + highestEmotion + " with a probability of " + highestProbability.toFixed(2);
+  }catch(error){
+    console.error("Error predicting emotion: ", error);
+  }
 }
 
 // Begin the music selection
@@ -401,18 +405,40 @@ function selectMusic() {
 
 // Function to detect a face in the webcam frame
 async function detectFace() {
-  // Get video element from webcam to base the detection on
-  video = webcam.canvas;
-
-  // For your convenience I offered a loaded cascade (faceCascade) though, you may change as much as you like
-  if (!faceCascade) {
-    console.log("Cascade not loaded");
-    return;
-  }
-
-  // Use canvas to draw the output
-  const canvas = document.getElementById('canvasOutput');
-  //console.log("Detecting face");
-
-
+  try{
+    if (!faceCascade || !OpenCVReady) {
+      console.log("Cascade not loaded or OpenCV not ready");
+      return;
+    }
+  
+    //converting webcam canvas to mat obj for opencv
+    let src = cv.imread(webcam.canvas);
+    let gray = new cv.Mat();
+    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+  
+    //face detection
+    let faces = new cv.RectVector();
+    let detectSize = new cv.Size(0, 0); // Use a small size for faster detection, adjust based on your needs
+    faceCascade.detectMultiScale(gray, faces, 1.1, 3, 0, detectSize, detectSize);
+  
+    //if flag set, draw bounding box
+    if (showBoundingBoxes) {
+      for (let i = 0; i < faces.size(); ++i) {
+        let face = faces.get(i);
+        let point1 = new cv.Point(face.x, face.y);
+        let point2 = new cv.Point(face.x + face.width, face.y + face.height);
+        cv.rectangle(src, point1, point2, [255, 0, 0, 255]);
+      }
+    }
+  
+    //display results
+    cv.imshow('canvasOutput', src);
+  
+    // Clean up
+    src.delete();
+    gray.delete();
+    faces.delete();
+  }catch(error){
+    console.error("Error detecting face: ", error);
+  } 
 }
