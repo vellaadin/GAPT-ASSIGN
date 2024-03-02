@@ -68,7 +68,9 @@
         <div id="webcam-placeholder">
           <p> Click Enable Webcam to view playback!</p>
         </div>
-        <div id="webcam-container" style="display: none;"></div>
+        <div id="webcam-container" style="display: none;">
+          <video id="webcamPlayback" autoplay playsinline width="640" height="480"></video>
+        </div>
         <div id="opencv-container" style="display: none;">
           <canvas id="canvasOutput" width="640" height="480"></canvas>
         </div>

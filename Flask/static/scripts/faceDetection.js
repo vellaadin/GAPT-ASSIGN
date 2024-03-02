@@ -13,12 +13,26 @@ var modelLoaded = false;
 var timeOut = 0;
 var canvasDOM;
 
+var webcamPlayback; // The video element for the webcam playback
+var mediaStream; // The media stream from the webcam
+var cvCanvas; // The canvas for the OpenCV output
+var cap; // The video capture object for OpenCV
+var context; // The context for the canvas
+
 let model, webcam, labelContainer, maxPredictions; // Variables used by the model
 
 var mostLikelyEmotionDisplay; // May or may not remove - used to display the most likely emotion, used as an exercise to extract the most likely emotion from the model
 
 // Wait for the DOM to be ready before trying to access the video element (otherwise it might not be loaded yet)
 document.addEventListener("DOMContentLoaded", async function (event) {
+  //-----------------Set up the webcam-----------------
+  webcamPlayback = document.getElementById("webcamPlayback");
+  cvCanvas = document.getElementById("canvasOutput");
+  // Flip the video
+  webcamPlayback.style.transform = "scale(-1, 1)";
+  cvCanvas.style.transform = "scale(-1, 1)";
+  context = cvCanvas.getContext('2d');
+
   //-----------------Set up the model-----------------
 
   // Load the teachable machine model
@@ -83,15 +97,30 @@ function openCVLoaded() {
   }, 1000); // 1 second delay to ensure OpenCV is fully loaded
 }
 
+
 // Function to load the cascade
 function loadCascade() {
   if (OpenCVReady) {
     const cascadeUrl = "https://github.com/opencv/opencv/blob/master/data/haarcascades/haarcascade_frontalcatface.xml";
     // ^ Use above URL to load the cascade from the internet if the local file doesn't work
     faceCascade = new cv.CascadeClassifier();
-    faceCascade.load('/face_cascade');
-    cascadeLoaded = true;
-    console.log("Cascade loaded");
+
+    // use createFileFromUrl to create virtual file from the URL
+    createFileFromUrl('/face_cascade', '/face_cascade', () => {
+      faceCascade.load('/face_cascade');
+    });
+
+    setTimeout(function () {
+
+      if (faceCascade.empty()) {
+        console.error('Failed to load face cascade');
+        displayModal("Failed to load face cascade");
+      }
+      else {
+        cascadeLoaded = true;
+        console.log("Cascade loaded");
+      }
+    }, 1000); // 1 second delay to ensure the cascade is fully loaded
   }
   else {
     console.log("OpenCV not ready yet, waiting 1 second to try again (attempt " + ++timeOut + ")");
@@ -103,6 +132,48 @@ function loadCascade() {
     }
   }
 }
+
+// Function to create a file from a URL
+async function createFileFromUrl(path, url, callback) {
+  let request = new XMLHttpRequest();
+  request.open('GET', url, true);
+  request.responseType = 'arraybuffer';
+  request.onload = function(ev) {
+      if (request.readyState === 4) {
+          if (request.status === 200) {
+              let data = new Uint8Array(request.response);
+              cv.FS_createDataFile('/', path, data, true, false, false);
+              callback();
+          } else {
+              logOpenCVError('Failed to load ' + url + ' status: ' + request.status);
+          }
+      }
+  };
+  request.send();
+};
+
+// Function used to give more descriptive error messages for OpenCV errors
+function logOpenCVError(err) {
+  if (typeof err === 'undefined') {
+    err = '';
+  } else if (typeof err === 'number') {
+      if (!isNaN(err)) {
+          if (typeof cv !== 'undefined') {
+              err = 'Exception: ' + cv.exceptionFromPtr(err).msg;
+          }
+      }
+  } else if (typeof err === 'string') {
+      let ptr = Number(err.split(' ')[0]);
+      if (!isNaN(ptr)) {
+          if (typeof cv !== 'undefined') {
+              err = 'Exception: ' + cv.exceptionFromPtr(ptr).msg;
+          }
+      }
+  } 
+
+  console.error(err)
+}
+
 
 // Function to display modal with message for error handling
 function displayModal(message) {
@@ -142,11 +213,27 @@ async function startWebcam() {
     return;
   }
 
+  if (!OpenCVReady) {
+    displayModal("OpenCV not loaded, please try again later");
+    return;
+  }
+
   // Webcam setup options
   const flip = true; // Whether to flip the webcam
   const width = 640; // Width of the webcam frame
   const height = 480; // height of the webcam frame
 
+  // Try to access the webcam
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    webcamPlayback.srcObject = mediaStream;
+    cap = new cv.VideoCapture(webcamPlayback);
+  } catch (error) {
+    displayModal("Couldn't access the webcam");
+    console.error("Couldn't accessing webcam:", error);
+  }
+
+  // TODO - once done and image model uses the output of opencv, remove the below code (remove all references to webcam)
   try {
     // Try to access the webcam
     webcam = new tmImage.Webcam(width, height, flip); // width, height, flip
@@ -161,11 +248,15 @@ async function startWebcam() {
   await webcam.play(); // Start taking webcam input
   window.requestAnimationFrame(loop); // Start updating the webcam frame (playback)
 
+  // Show the webcam container
   const webcamContainer = document.getElementById("webcam-container");
   webcamContainer.style.display = "flex"; // Show the webcam container
-  webcamContainer.appendChild(webcam.canvas); // Add webcam playback to page
-  document.getElementById('webcam-placeholder').style.display = 'none'; // Hide placeholder
-  canvasDOM = document.getElementById('webcam-container').getElementsByTagName('canvas')[0];
+  //webcamContainer.appendChild(webcam.canvas); // Add webcam playback to page
+
+  // Hide placeholder
+  document.getElementById('webcam-placeholder').style.display = 'none';
+
+  //canvasDOM = document.getElementById('webcam-container').getElementsByTagName('canvas')[0];
 
   accessGranted = true;// Enable the flag
 
@@ -186,8 +277,12 @@ function stopWebcam() {
     return;
   }
 
+  mediaStream.getTracks().forEach(track => track.stop());
+  //webcamPlayback.srcObject = null;
+
   webcam.stop(); // Stop the webcam
-  webcam.canvas.remove(); // Remove webcam playback from page
+  //webcam.canvas.remove(); // Remove webcam playback from page
+
   window.cancelAnimationFrame(loop); // Stop updating the webcam frame
 
   document.getElementById('webcam-placeholder').style.display = 'flex '; // Toggle placeholder
@@ -209,19 +304,20 @@ function toggleWebcam() {
 
 // Function to toggle drawing of bounding boxes around detected faces
 function toggleBoundingBoxes() {
-  displayModal("Placeholder for drawing bounding boxes")
 
   showBoundingBoxes = !showBoundingBoxes;
   if (showBoundingBoxes) {
     // Draw bounding boxes
     document.getElementById("toggleBoundingBoxes").innerHTML = "Hide Bounding Boxes";
     document.getElementById("canvasOutput").style.display = "Block";
+    document.getElementById("opencv-container").style.display = "Flex";
     document.getElementById("webcam-container").style.display = "None";
   }
   else {
     // Remove bounding boxes
     document.getElementById("toggleBoundingBoxes").innerHTML = "Show Bounding Boxes";
     document.getElementById("canvasOutput").style.display = "None";
+    document.getElementById("opencv-container").style.display = "Flex";
     document.getElementById("webcam-container").style.display = "Flex";
   }
 }
@@ -372,6 +468,11 @@ function stopMusicSelection() {
     document.getElementById("extraButtons").style.display = "None";
   }
 
+  // If bounding boxes are activated, disable them
+  if (showBoundingBoxes) {
+    toggleBoundingBoxes();
+  }
+
   // Disable labels if activated
   if (showLabels) {
     toggleLabels();
@@ -410,16 +511,23 @@ async function detectFace() {
       console.log("Cascade not loaded or OpenCV not ready");
       return;
     }
-  
+
+    // Old code (for reference or whatever)
+    //let src = cv.imread(webcam.canvas); // Note using cap.read seems slower (bigger frame size?)
+    
     //converting webcam canvas to mat obj for opencv
-    let src = cv.imread(webcam.canvas);
+    let src = new cv.Mat(webcam.canvas.height, webcam.canvas.width, cv.CV_8UC4);
+    cap.read(src); // Read the frame from the webcam
     let gray = new cv.Mat();
     cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
   
     //face detection
     let faces = new cv.RectVector();
-    let detectSize = new cv.Size(0, 0); // Use a small size for faster detection, adjust based on your needs
-    faceCascade.detectMultiScale(gray, faces, 1.1, 3, 0, detectSize, detectSize);
+    let detectSize = new cv.Size(0, 0); // Use a small size for faster detection, adjust based on your needs 
+    let minNeighbours = 3; // Lower value for faster detection, higher value for more reliable detection
+    let scaleFactor = 1.15; // Higher value for faster detection, lower value for more reliable detection
+    let flags = 0; // 0 for default (not sure what it does)
+    faceCascade.detectMultiScale(gray, faces, scaleFactor, minNeighbours, flags, detectSize, detectSize);
   
     //if flag set, draw bounding box
     if (showBoundingBoxes) {
@@ -429,10 +537,9 @@ async function detectFace() {
         let point2 = new cv.Point(face.x + face.width, face.y + face.height);
         cv.rectangle(src, point1, point2, [255, 0, 0, 255]);
       }
+      //display results
+      cv.imshow('canvasOutput', src);
     }
-  
-    //display results
-    cv.imshow('canvasOutput', src);
   
     // Clean up
     src.delete();
@@ -440,5 +547,6 @@ async function detectFace() {
     faces.delete();
   }catch(error){
     console.error("Error detecting face: ", error);
+    logOpenCVError(error);
   } 
 }
