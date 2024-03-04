@@ -18,7 +18,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+  <script src="{{ url_for('static', filename='scripts/utils.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/faceDetection.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/emotionPrediction.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/music.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/main.js') }}"></script>
   <script async src="https://docs.opencv.org/4.5.4/opencv.js" onload="openCVLoaded()" type="text/javascript"></script>
 </head>
 
@@ -76,7 +80,7 @@
         </div>
         <!-- Labels -->
         <div class = "vertical-container" id="side-container">
-          <h3>Labels and their values:</h2>
+          <h3>Labels:</h2>
           <div id="label-container"></div>
         </div>
       </div>
