@@ -91,7 +91,7 @@ async function detectFace() {
             let croppedFace = src.roi(faceRectangle);
 
             //resize cropped face
-            let dsize = new cv.Size(224, 220);
+            let dsize = new cv.Size(224, 224);
             let resizedFace = new cv.Mat();
             cv.resize(croppedFace, resizedFace, dsize, 0, 0, cv.INTER_AREA); //this is to be passed to model
 
