@@ -81,6 +81,25 @@ async function detectFace() {
         let flags = 0; // 0 for default (not sure what it does)
         faceCascade.detectMultiScale(gray, faces, scaleFactor, minNeighbours, flags, detectSize, detectSize);
 
+        //checking if min. of one face detected
+        if(faces.size() > 0){
+            //getting first face detected
+            let face = faces.get(0);
+            let faceRectangle = new cv.Rect(face.x, face.y, face.width, face.height);
+
+            //crop detected face
+            let croppedFace = src.roi(faceRectangle);
+
+            //resize cropped face
+            let dsize = new cv.Size(224, 220);
+            let resizedFace = new cv.Mat();
+            cv.resize(croppedFace, resizedFace, dsize, 0, 0, cv.INTER_AREA); //this is to be passed to model
+
+            //clean up
+            croppedFace.delete();
+            resizedFace.delete();
+        }
+
         //if flag set, draw bounding box
         if (showBoundingBoxes) {
             for (let i = 0; i < faces.size(); ++i) {
