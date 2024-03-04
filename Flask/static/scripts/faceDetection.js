@@ -90,20 +90,25 @@ async function detectFace() {
             //crop detected face
             let croppedFace = src.roi(faceRectangle);
 
+            //convert to grayscale
+            let grayCroppedFace = new cv.Mat();
+            cv.cvtColor(croppedFace, grayCroppedFace, cv.COLOR_RGBA2GRAY, 0);
+
             //resize cropped face
             let dsize = new cv.Size(224, 224);
-            let resizedFace = new cv.Mat();
-            cv.resize(croppedFace, resizedFace, dsize, 0, 0, cv.INTER_AREA); //this is to be passed to model
+            let resizedGrayFace = new cv.Mat();
+            cv.resize(grayCroppedFace, resizedGrayFace, dsize, 0, 0, cv.INTER_AREA); //this is to be passed to model
 
             //(just for now) displaying resized face on dedicated canvas
-            cv.imshow('croppedFaceCanvas', resizedFace);
+            cv.imshow('croppedFaceCanvas', resizedGrayFace);
 
             //ensure container visable
             document.getElementById('cropped-face-container').style.display = 'block';
 
             //clean up
             croppedFace.delete();
-            resizedFace.delete();
+            grayCroppedFace.delete();
+            resizedGrayFace.delete();
         }
 
         //if flag set, draw bounding box
