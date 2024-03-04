@@ -95,6 +95,12 @@ async function detectFace() {
             let resizedFace = new cv.Mat();
             cv.resize(croppedFace, resizedFace, dsize, 0, 0, cv.INTER_AREA); //this is to be passed to model
 
+            //(just for now) displaying resized face on dedicated canvas
+            cv.imshow('croppedFaceCanvas', resizedFace);
+
+            //ensure container visable
+            document.getElementById('cropped-face-container').style.display = 'block';
+
             //clean up
             croppedFace.delete();
             resizedFace.delete();
