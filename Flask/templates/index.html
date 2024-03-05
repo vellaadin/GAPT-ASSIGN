@@ -57,6 +57,8 @@
         <div class = "buttonSet" id="extraButtons" style="display: none;">
           <!-- Show facial detection visualisation -->
           <button id="toggleBoundingBoxes" onclick="toggleBoundingBoxes()">Draw Bounding boxes</button>
+          <!-- Show cropped face -->
+          <button id="toggleCroppedFace" onclick="toggleCroppedFace()">Show Cropped Face</button>
           <!-- Show Classification labels -->
           <button id="toggleLabels" onclick="toggleLabels()">Show Labels</button>
         </div>
@@ -69,6 +71,9 @@
       <div id="cropped-face-container" style="display: none;">
         <h2>Cropped Face</h2>
         <canvas id="croppedFaceCanvas" width="224" height="224"></canvas>
+        <div id="croppedFacePlaceholder" style="display: none;">
+          <p>No Face Detected</p>
+        </div>
       </div>
 
 

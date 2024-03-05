@@ -10,9 +10,11 @@ var running = false; // Flag to check if the music selection process is running 
 var musicPlaying = false; // Flag to check if music is currently playing
 var showLabels = false; // Flag to see whether all labels are to be displayed
 var displayWebcamAndLabels = true; // Flag to see whether the webcam and labels are to be displayed
+var showCroppedFace = false; // Flag to see whether the cropped face is to be displayed
 
 
 var sideContainer; // The container for the side panel showing the labels
+var croppedFaceCanvas; // The canvas containing the greyscale cropped face from the webcam frame (to be used for emotion prediction)
 
 //----------------------------- Initialisation ----------------------------//
 
@@ -21,9 +23,11 @@ document.addEventListener("DOMContentLoaded", async function (event) {
     //-----------------Set up the webcam-----------------
     webcamPlayback = document.getElementById("webcamPlayback");
     cvCanvas = document.getElementById("canvasOutput");
+    croppedFaceCanvas = document.getElementById("croppedFaceCanvas");
     // Flip the video
     webcamPlayback.style.transform = "scale(-1, 1)";
     cvCanvas.style.transform = "scale(-1, 1)";
+    croppedFaceCanvas.style.transform = "scale(-1, 1)";
     context = cvCanvas.getContext('2d');
 
     //-----------------Set up the model-----------------
@@ -96,6 +100,10 @@ function toggleDisplay() {
         if (running) {
             additionalButtons.style.display = "Flex";
         }
+
+        if (showCroppedFace) {
+            document.getElementById("cropped-face-container").style.display = "Block";
+        }
     }
     else {
         container.style.display = "None";
@@ -103,6 +111,10 @@ function toggleDisplay() {
 
         if (running) {
             additionalButtons.style.display = "None";
+        }
+
+        if (showCroppedFace) {
+            document.getElementById("cropped-face-container").style.display = "None";
         }
     }
 }
@@ -142,6 +154,20 @@ function toggleBoundingBoxes() {
         document.getElementById("canvasOutput").style.display = "None";
         document.getElementById("opencv-container").style.display = "Flex";
         document.getElementById("webcam-container").style.display = "Flex";
+    }
+}
+
+function toggleCroppedFace() {
+    showCroppedFace = !showCroppedFace;
+    if (showCroppedFace) {
+        // Draw cropped face
+        document.getElementById("toggleCroppedFace").innerHTML = "Hide Cropped Face";
+        document.getElementById("cropped-face-container").style.display = "Block";
+    }
+    else {
+        // Remove cropped face
+        document.getElementById("toggleCroppedFace").innerHTML = "Show Cropped Face";
+        document.getElementById("cropped-face-container").style.display = "None";
     }
 }
 
@@ -299,6 +325,11 @@ function stopMusicSelection() {
     // If bounding boxes are activated, disable them
     if (showBoundingBoxes) {
         toggleBoundingBoxes();
+    }
+
+    // If cropped face is activated, disable it
+    if (showCroppedFace) {
+        toggleCroppedFace();
     }
 
     // Disable labels if activated

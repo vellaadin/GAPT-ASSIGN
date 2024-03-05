@@ -367,3 +367,13 @@ footer a.hover {
     color: var(--link-highlight);
     cursor: pointer;
 }
+
+#croppedFacePlaceholder {
+    width: 224px;
+    height: 224px;
+    background-color: var(--grey);
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -3,6 +3,7 @@
 var OpenCVReady = false; // Flag to see whether OpenCV is ready
 var cascadeLoaded = false; // Flag to see whether the cascade has been loaded
 var showBoundingBoxes = false; // Flag to see whether bounding boxes should be drawn on detected faces
+var faceDetected = false; // Flag to see whether a face has been detected
 
 var faceCascade; // The face cascade used for face detection
 var cap; // The video capture object for OpenCV
@@ -102,13 +103,26 @@ async function detectFace() {
             //(just for now) displaying resized face on dedicated canvas
             cv.imshow('croppedFaceCanvas', resizedGrayFace);
 
-            //ensure container visable
-            document.getElementById('cropped-face-container').style.display = 'block';
+            // Show Canvas
+            document.getElementById('croppedFaceCanvas').style.display = 'block';
+
+            // Ensure placeholder is hidden
+            document.getElementById('croppedFacePlaceholder').style.display = 'none';
 
             //clean up
             croppedFace.delete();
             grayCroppedFace.delete();
             resizedGrayFace.delete();
+
+            faceDetected = true;
+        }
+        else {
+            faceDetected = false;
+            // Hide Canvas
+            document.getElementById('croppedFaceCanvas').style.display = 'none';
+
+            // Show placeholder
+            document.getElementById('croppedFacePlaceholder').style.display = 'flex';
         }
 
         //if flag set, draw bounding box
