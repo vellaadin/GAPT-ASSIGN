@@ -18,7 +18,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+  <script src="{{ url_for('static', filename='scripts/utils.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/faceDetection.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/emotionPrediction.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/music.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/main.js') }}"></script>
   <script async src="https://docs.opencv.org/4.5.4/opencv.js" onload="openCVLoaded()" type="text/javascript"></script>
 </head>
 
@@ -53,6 +57,8 @@
         <div class = "buttonSet" id="extraButtons" style="display: none;">
           <!-- Show facial detection visualisation -->
           <button id="toggleBoundingBoxes" onclick="toggleBoundingBoxes()">Draw Bounding boxes</button>
+          <!-- Show cropped face -->
+          <button id="toggleCroppedFace" onclick="toggleCroppedFace()">Show Cropped Face</button>
           <!-- Show Classification labels -->
           <button id="toggleLabels" onclick="toggleLabels()">Show Labels</button>
         </div>
@@ -62,19 +68,30 @@
         <h2 id="emotion">Placeholder Emotion</h2>
       </div>
 
+      <div id="cropped-face-container" style="display: none;">
+        <h2>Cropped Face</h2>
+        <canvas id="croppedFaceCanvas" width="224" height="224"></canvas>
+        <div id="croppedFacePlaceholder" style="display: none;">
+          <p>No Face Detected</p>
+        </div>
+      </div>
+
+
       <!-- Playback and labels -->
       <div class ="horizontal-container" id="webcam-and-labels-container">
         <!-- Video playback -->
         <div id="webcam-placeholder">
           <p> Click Enable Webcam to view playback!</p>
         </div>
-        <div id="webcam-container" style="display: none;"></div>
+        <div id="webcam-container" style="display: none;">
+          <video id="webcamPlayback" autoplay playsinline width="640" height="480"></video>
+        </div>
         <div id="opencv-container" style="display: none;">
           <canvas id="canvasOutput" width="640" height="480"></canvas>
         </div>
         <!-- Labels -->
         <div class = "vertical-container" id="side-container">
-          <h3>Labels and their values:</h2>
+          <h3>Labels:</h2>
           <div id="label-container"></div>
         </div>
       </div>
