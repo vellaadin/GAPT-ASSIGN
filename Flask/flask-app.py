@@ -1,4 +1,5 @@
-from flask import Flask, render_template, send_from_directory, request, abort
+from flask import Flask, render_template, send_from_directory, request, abort, jsonify
+import json, re, os
 
 app = Flask(__name__)
 
@@ -10,7 +11,7 @@ URL = "https://teachablemachine.withgoogle.com/models/l4Oo33mJS/"; # URL of the 
 
 AUTHENTICATION_TOKEN = 'a123' # Authentication token for the user
 
-# Authentication function - return True if the user is authorised to access the file, False otherwise
+# Authentication function - return True if the user is authorized to access the file, False otherwise
 def authenticate(token):
     if token == AUTHENTICATION_TOKEN:
         return True
@@ -58,6 +59,26 @@ def get_url():
         return URL
     else:
         abort(403)
+
+# Define a route to serve emotion JSON files
+@app.route('/<emotion>')
+def get_emotion_json(emotion):
+    # Check if the emotion is valid
+    valid_emotions = ['sad', 'angry', 'disgust', 'fear', 'happy', 'neutral', 'surprise']
+    if emotion.lower() not in valid_emotions:
+        return 'Invalid emotion', 400  # Return a 400 Bad Request status for invalid emotions
+
+    # Construct the path to the JSON file
+    json_file_path = os.path.join('Flask', 'static', 'Playlists', f'{emotion.capitalize()}.json')
+
+    # Check if the JSON file exists
+    if not os.path.exists(json_file_path):
+        return 'Emotion data not found', 404  # Return a 404 Not Found status if the file does not exist
+
+    # Return the JSON data
+    with open(json_file_path) as f:
+        data = json.load(f)
+    return jsonify(data)
 
 # Page to display when content is not found
 @app.errorhandler(404)
