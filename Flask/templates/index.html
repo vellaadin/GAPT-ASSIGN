@@ -6,9 +6,9 @@
   <meta name="description" content="Emotion-driven music player through webcam facial detection and expression recognition">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="{{ url_for('static', filename='assets/icon.png') }}">
-  <title>placeholdername :))</title>
+  <title>yourTunes</title>
 
-  <link rel="preconnect" hSref="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Workbench&display=swap" rel="stylesheet">
@@ -29,8 +29,7 @@
 <body>
   <!-- Title -->
   <div class = "title-container" id="page-title">
-    <h1 class="title">placeholdername - An Emotion-Driven Music Player</h1>
-    <h1 style="font-family: \'Workbench\', sans-serif;">other font</h1>
+    <h1 class="title">yourTunes - An Emotion-Driven Music Player</h1>
   </div>
 
   <!-- Modal Error box -->
@@ -101,10 +100,20 @@
   <!-- Music Area -->
   <div id="music-section">
     <h2>Music</h2>
-    <div id="musicPlaceHolder">
-      <p>Click start to begin listening</p>
+    <div id="musicMessage">What mood are you in?</div> <!-- Message container -->
+    <div id="musicPlaceHolder">                                                                                                             
+      <iframe id="musicPlayerIframe" style="border-radius:10px; padding:20px" src="" width="100%" height="100%" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
-    <!-- Something... -->
+    <div id="emotionScores" style="display: none;">
+      <h3>Emotion Scores:</h3>
+      <table id="emotionTable">
+        <thead>
+          <tr id="emotionTableHeader"></tr>
+          <tr id="emotionTableData"></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Info Area -->
@@ -115,7 +124,7 @@
     <div class="info-group">
       <h2>What is this?</h2>
       <p>
-        <span class="highlight">placeholdername</span> is an emotion-driven music player that uses your webcam to detect
+        <span class="highlight">yourTunes</span> is an emotion-driven music player that uses your webcam to detect
         and identify your facial expressions using a machine learning model and plays music based on your mood.
       </p>
     </div>
@@ -123,7 +132,7 @@
     <div class="info-group">
       <h2>How does it work?</h2>
       <p>
-        <span class="highlight">placeholdername</span> makes use of your webcam feed to find your face using 
+        <span class="highlight">yourTunes</span> makes use of your webcam feed to find your face using 
         <a href="https://opencv.org/" target="_blank"> OpenCV </a> and then uses a machine learning model
         trained using <a href="https://teachablemachine.withgoogle.com/" target="_blank"> Google Teachable Machine </a>
         to identify your facial expression. The model then uses this information to play music from a curated selection
@@ -134,7 +143,7 @@
     <div class="info-group">
       <h2>Why was it made?</h2>
       <p>
-        <span class="highlight">placeholdername</span> was made as a project for the GAPT course at the University of Malta.
+        <span class="highlight">yourTunes</span> was made as a project for the GAPT course at the University of Malta.
         It was made to demonstrate the use of machine learning and computer vision in a real world application.
       </p>
     </div>
