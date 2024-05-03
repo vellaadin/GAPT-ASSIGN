@@ -16,9 +16,9 @@ Should you have any questions feel free to ask, styling is done just to get by f
 Ideally do work in a new branch to make life easier :))
 
 ## Work to be done:
-- Facial detection component (use opencv to detect faces)
-- Music selection component (logic to select a music track given a predicted emotion)
-- Finding music
+- Facial detection component (use opencv to detect faces) ✅
+- Music selection component (logic to select a music track given a predicted emotion) ✅
+- Finding music ✅
 - Further site building and styling
 
 ## Using flask:
