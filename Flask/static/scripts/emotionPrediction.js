@@ -46,8 +46,11 @@ async function predict () {
             const classPrediction =
                 prediction[i].className + ": " + prediction[i].probability.toFixed(2);
             labelContainer.childNodes[i].innerHTML = classPrediction;
-        }
 
+            // Add the prediction to the emotion scores
+            emotionScores[emotionNames.indexOf(prediction[i].className)] += prediction[i].probability;
+        }
+        total_iterations++; // Increment the number of iterations
         mostLikelyEmotion = highestEmotion; // Make the most likely emotion available to other functions
 
         // Display the most likely emotion - currently done 'for fun' but could be used to give feedback to the user

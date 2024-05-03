@@ -65,7 +65,7 @@ def get_url():
         abort(403)
         
 # Define a route to serve emotion JSON files
-@app.route('/<emotion>')
+@app.route('/<emotion>_playlist')
 def get_emotion_json(emotion):
     emotion = emotion.lower()
     

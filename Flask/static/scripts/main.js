@@ -339,6 +339,11 @@ function stopMusicSelection() {
     // Disable most likely emotion display
     document.getElementById("emotion-container").style.display = "None";
 
+    selectMusic();
+
+    // Enable emotion score display
+    document.getElementById("emotionScores").style.display = "Block";
+
     // Redirect the user to the music player
     var musicPlayer = document.getElementById("music-section");
     musicPlayer.scrollIntoView({ behavior: "smooth" });
@@ -354,8 +359,6 @@ async function loop() {
     if (running) {
         await detectFace(); // Detect a face in the webcam frame
         await predict(); // Predict the emotion of the face
-        selectMusic(); // Select music based on the predicted emotion
-        // Consider different music selection logic e.g taking the highest value over a period of time rather than just the current frame
     }
 
     window.requestAnimationFrame(loop); // request the next frame

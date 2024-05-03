@@ -1,3 +1,35 @@
+var emotionScores = [0, 0, 0, 0, 0, 0, 0];
+var emotionNames = ["Sad", "Surprise", "Neutral", "Happy", "Fear", "Disgust", "Angry"];
+var total_iterations = 0;
+
+function resetEmotionScores() {
+    emotionScores = [0, 0, 0, 0, 0, 0, 0];
+    total_iterations = 0;
+}
+
+function chooseEmotion() {
+    var maxEmotion = 0;
+    var maxEmotionIndex = 2; // Default to Neutral
+    for (var i = 0; i < emotionScores.length; i++) {
+        if (emotionScores[i] > maxEmotion) {
+            maxEmotion = emotionScores[i];
+            maxEmotionIndex = i;
+        }
+    }
+    return emotionNames[maxEmotionIndex];
+}
+
+// Used for displaying the scores of each emotion
+function normaliseEmotionScores() {
+    for (var i = 0; i < emotionScores.length; i++) {
+        emotionScores[i] = emotionScores[i] / total_iterations;
+        // Round to 2 decimal places
+        emotionScores[i] = Math.round(emotionScores[i] * 100) / 100;
+    }
+
+    total_iterations = 1;
+}
+
 // Function to select music based on the detected emotion
 function selectMusic() {
     // If music is already playing, don't start it again
@@ -6,10 +38,19 @@ function selectMusic() {
         return;
     }
 
+    // Normalise the emotion scores
+    normaliseEmotionScores();
+    // Update the table with the emotion scores
+    updateEmotionsTable();
+
+    var chosen_emotion = chooseEmotion();
+    // Reset the emotion scores for the next iteration
+    resetEmotionScores();
+
     possible_emotions = ["Sad", "Surprise", "Neutral", "Happy", "Fear", "Disgust", "Angry"];
 
-    if (possible_emotions.includes(mostLikelyEmotion)) {
-        fetchPlaylistAndPlay(mostLikelyEmotion);
+    if (possible_emotions.includes(chosen_emotion)) {
+        fetchPlaylistAndPlay(chosen_emotion);
     }
     else {
         console.error("Emotion not recognized");
@@ -19,12 +60,12 @@ function selectMusic() {
 // Function to select music based on the detected emotion
 function fetchPlaylistAndPlay(emotion) {
     var valid_emotion = false;
-    emotion_request = "NULL";
-    try{
-        emotion_request = emotion.toLowerCase();
+    var emotion_request = "NULL";
+    try {
+        emotion_request = emotion.toLowerCase() + "_playlist";
         valid_emotion = true;
     }
-    catch (error){
+    catch (error) {
         console.error("Error: Unable to convert emotion to lowercase. Error: ", error);
         valid_emotion = false;
     }
@@ -95,4 +136,27 @@ function updateMusicMessage(emotion) {
 
     // Update the content of the music message container
     musicMessageContainer.textContent = message;
+}
+
+// Function to update the table with the emotion scores
+function updateEmotionsTable() {
+    // Get references to the table rows
+    //var tableBody = document.querySelector('#emotionTable tbody');
+    var labelsRow = document.getElementById('emotionTableHeader');
+    var scoresRow = document.getElementById('emotionTableData');
+
+    // Clear existing data
+    labelsRow.innerHTML = '';
+    scoresRow.innerHTML = '';
+
+    // Loop through the arrays and create table cells dynamically
+    for (var i = 0; i < emotionScores.length; i++) {
+        var labelCell = document.createElement('td');
+        labelCell.textContent = emotionNames[i];
+        labelsRow.appendChild(labelCell);
+
+        var scoreCell = document.createElement('td');
+        scoreCell.textContent = emotionScores[i];
+        scoresRow.appendChild(scoreCell);
+    }
 }
