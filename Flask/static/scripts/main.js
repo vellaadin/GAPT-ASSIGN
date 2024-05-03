@@ -288,7 +288,7 @@ function startMusicSelection() {
     running = true;
 
     // Change the button text to 'Stop'
-    document.getElementById("toggleMusicSelection").innerHTML = "Stop";
+    document.getElementById("toggleMusicSelection").innerHTML = "Get Music Recommendation";
 
     // Hide the placeholder for the music player
     document.getElementById("musicPlaceHolder").style.display = "None";
@@ -338,6 +338,10 @@ function stopMusicSelection() {
     }
     // Disable most likely emotion display
     document.getElementById("emotion-container").style.display = "None";
+
+    // Redirect the user to the music player
+    var musicPlayer = document.getElementById("music-section");
+    musicPlayer.scrollIntoView({ behavior: "smooth" });
 }
 
 //----------------------------- Main Loop ----------------------------//

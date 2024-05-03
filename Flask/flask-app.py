@@ -81,7 +81,6 @@ def get_emotion_json(emotion):
 
     # Check if the JSON file exists
     if not os.path.exists(json_file_path):
-        print(json_file_path)
         return 'Emotion data not found', 404  # Return a 404 Not Found status if the file does not exist
 
     # Return the JSON data
