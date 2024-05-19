@@ -5,7 +5,7 @@
 Assigned as the project for the ICS2000 unit, yourTunes is a javascript based web application, hosted through flask able to indentify a user's emotion and play relevant music.
 
 Feel free to learn more through the demo video below:
-[![Watch the video](githubAssets/demo_thumbnail.png)]([githubAssets/yourTunes.mov](https://drive.google.com/file/d/17R6D93Y_82Nl0nTm9jW49_mV0Ejs7geW/view?usp=sharing))
+[![Watch the video](githubAssets/demo_thumbnail.png)](https://drive.google.com/file/d/17R6D93Y_82Nl0nTm9jW49_mV0Ejs7geW/view?usp=sharing)
 
 ### How does it work?
 
