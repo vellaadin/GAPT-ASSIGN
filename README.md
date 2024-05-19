@@ -1,28 +1,21 @@
-# GAPT-ASSIGNMENT: Emotion-driven music player
+# yourTunes - An Emotion-Driven Music Player
 
-## Rundown of current work
+## What is this?
 
-The general framework of the site has been done (feel free to change/improve should you like but ideally mention changes to facilitate merging our work)
+Assigned as the project for the ICS2000 unit, yourTunes is a javascript based web application, hosted through flask able to indentify a user's emotion and play relevant music.
 
-Currently the user has 4 button they can select:
-Enable/Disable Webcam which enable/disable the webcam and playback, and Start/Stop which enable/disable the music selection process.  
-The music selection process entails the following:  
-- First faces are detected in the webcam feed
-- These faces are fed to the classification model which classifies the emotion
-- This emotion is used to select a music track if no music is currently running  
+Feel free to learn more through the demo video below:
+[![Watch the video](githubAssets/demo_thumbnail.png)]([githubAssets/yourTunes.mov](https://drive.google.com/file/d/17R6D93Y_82Nl0nTm9jW49_mV0Ejs7geW/view?usp=sharing))
 
-Should you have any questions feel free to ask, styling is done just to get by for now (for practicality) and should be improved later on.
+### How does it work?
 
-Ideally do work in a new branch to make life easier :))
+yourTunes makes use of your webcam feed to find faces through the Viola-Jones method. This is done using OpenCV.js and the OpenCV default front facial haar-cascade. Once a face has been found it is cropped out of the video frame, converted to greyscale and resized to 224x224 pixels. This cropped face is then passed through a TensorFlow image classification model trained through Teachable machine which is capable of identifying different emotions on faces. This produces a set of 7 confidence scores, one for each emotion the model was trained on (Happy, Sad, Angry, Disgust, Fear, Surprise and Neutral). These confidence values are summed and the emotion with the highest value over a period of time is the chosen emotion. The site then prompts the user with a song depending on the selected emotion.
 
-## Work to be done:
-- Facial detection component (use opencv to detect faces) ✅
-- Music selection component (logic to select a music track given a predicted emotion) ✅
-- Finding music ✅
-- Further site building and styling
 
-## Using flask:
-In order to launch flask run the flask-app.py script, once done you can connect to the site through 'http://localhost:5000/'
+### How do I use it?
+To use yourTunes the page must first be hosted, this can be done by simply running the flask-app.py script. Once this has been done
+the page can be accessed by going to http://localhost:5000/  
+Enjoy!
 
 
 ## Useful GAPT Proposal Information:
